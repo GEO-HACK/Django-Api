@@ -19,7 +19,7 @@ def drink_list(request):
             serializer.save()
             return Response(serializer.data, status = status.HTTP_201_CREATED)    
 
-
+@api_view(['GET','PUT','DELETE'])
 def drink_detail(request, id):
 
     try:
@@ -32,6 +32,13 @@ def drink_detail(request, id):
         serializer = DrinkSerializer(drinks )
         return JsonResponse(serializer.data)
     elif request.method == 'PUT':
-        pass
+        serializer = DrinkSerializer(drinks ,data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data)
+        return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)    
+         
     elif request.method == 'DELETE':
-        pass        
+        drinks.delete()
+        return Response(status = status.HTTP_204_NO_CONTENT)
+        
